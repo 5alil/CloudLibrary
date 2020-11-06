@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -33,9 +34,20 @@ namespace CloudLibrary.Helpers
         {
             string newDir = GetBasePath() + ProviderDirectoryName + "\\" + infrastructureName + "\\" + resourceType.ToString();
             CreateDirectory(newDir);
-
             string resourceSpecsAsJSON = JsonConvert.SerializeObject(resourceSpecs, Formatting.Indented);
-            File.WriteAllText(newDir + "\\" + infrastructureName + "_" + resourceName + ".json", resourceSpecsAsJSON);
+            try
+            {
+                File.WriteAllText(newDir + "\\" + infrastructureName + "_" + resourceName + ".json", resourceSpecsAsJSON);
+            }
+            catch (IOException ioEx)
+            {
+                Debug.WriteLine(ioEx.Message);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            
         }
 
         public static void DeleteInfrastructure(string ProviderDirectoryName, string infrastructureName)
